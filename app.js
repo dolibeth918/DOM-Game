@@ -15,20 +15,58 @@ roundScore = 0;
 //variable for the current active player, (either 0 || 1)
 currentPlayer = 0;
 
-document.querySelector('.dice').style.display = 'none';
+var diceDOM = document.querySelector('.dice');
+diceDOM.style.display = 'none';
 
 document.getElementById('score-0').textContent = '0';
 document.getElementById('score-1').textContent = '0';
 document.getElementById('current-0').textContent = '0';
 document.getElementById('current-1').textContent = '0';
 
+
 //want to set up an eventLitener for when the roll the dice button is clicked
 document.querySelector('.btn-roll').addEventListener('click', function(){
   //need to calculate a random number for each die roll
   var dice = Math.floor(Math.random() * 6 + 1);
   //display the result
-  var diceDOM = document.querySelector('.dice');
   diceDOM.style.display = 'block';
   diceDOM.src = 'dice-' + dice + '.png';
   //update the roundScore, only if die roll !== 1
-})
+  if (dice > 1){
+    roundScore += dice;
+    document.querySelector('#current-' + currentPlayer).textContent = roundScore;
+  } else {
+    nextPlayer();
+  }
+});
+
+//want to set up addEventListener for when the player wants to 'hold'
+//their scores
+document.querySelector('.btn-hold').addEventListener('click', function(){
+  // move the roundScore to the global score
+  scores[currentPlayer] += roundScore;
+
+  // update the UI
+  document.querySelector('#score-' + currentPlayer).textContent = scores[currentPlayer];
+
+  //check if the player won the game
+  if (scores[currentPlayer] >= 100) {
+    document.querySelector('#name-' + currentPlayer).textContent = 'Winner!';
+    diceDOM.style.display = 'none';
+    document.querySelector('.player-' + currentPlayer + '-panel').classList.add('winner');
+    document.querySelector('.player-' + currentPlayer + '-panel').classList.remove('active');
+  } else {
+    //go to the next players
+    nextPlayer();
+  }
+});
+
+function nextPlayer() {
+  currentPlayer = (currentPlayer + 1) % 2;
+  roundScore = 0;
+  document.getElementById('current-0').textContent = '0';
+  document.getElementById('current-1').textContent = '0';
+  document.querySelector('.player-0-panel').classList.toggle('active');
+  document.querySelector('.player-1-panel').classList.toggle('active');
+  diceDOM.style.display = 'none';
+}
