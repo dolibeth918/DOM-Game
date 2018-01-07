@@ -8,7 +8,7 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, currentPlayer;
+var scores, roundScore, currentPlayer, prevRoll;
 var diceDOM = document.querySelector('.dice');
 var gamePlaying = true;
 newGame();
@@ -21,12 +21,20 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
     diceDOM.style.display = 'block';
     diceDOM.src = 'dice-' + dice + '.png';
     //update the roundScore, only if die roll !== 1
-    if (dice > 1){
+    if (dice !== 1) {
+      console.log("curr role: " + dice);
+      console.log("prev role: " + prevRoll);
+      if (prevRoll === 6 && dice === 6) {
+        scores[currentPlayer] = 0;
+        document.querySelector('#score-' + currentPlayer).textContent = '0';
+        nextPlayer();
+      }
       roundScore += dice;
       document.querySelector('#current-' + currentPlayer).textContent = roundScore;
     } else {
       nextPlayer();
     }
+    prevRoll = dice;
   }
 });
 
@@ -86,3 +94,7 @@ function newGame(){
   document.querySelector('.player-0-panel').classList.remove('active');
   document.querySelector('.player-0-panel').classList.add('active');
 }
+
+
+/* Additional Game Rules:
+1. A player loses his entire score when he rolls 2 6s in a row. After that, it's the next player's turn*/
