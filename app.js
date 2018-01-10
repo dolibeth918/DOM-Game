@@ -20,8 +20,6 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
     diceDOM.src = 'dice-' + dice + '.png';
     //update the roundScore, only if die roll !== 1
     if (dice !== 1) {
-      console.log("curr role: " + dice);
-      console.log("prev role: " + prevRoll);
       if (prevRoll === 6 && dice === 6) {
         scores[currentPlayer] = 0;
         document.querySelector('#score-' + currentPlayer).textContent = '0';
@@ -45,9 +43,15 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
 
     // update the UI
     document.querySelector('#score-' + currentPlayer).textContent = scores[currentPlayer];
-
-    //check if the player won the game
-    if (scores[currentPlayer] >= 100) {
+    var input = document.querySelector('.final-score').value;
+    var winningScore;
+    if (input){
+      winningScore = input;
+    } else {
+      winningScore = 100;
+    }
+      //check if the player won the game
+    if (scores[currentPlayer] >= winningScore) {
       document.querySelector('#name-' + currentPlayer).textContent = 'Winner!';
       diceDOM.style.display = 'none';
       document.querySelector('.player-' + currentPlayer + '-panel').classList.add('winner');
@@ -55,8 +59,8 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
       //document.querySelector('.btn-roll').addEventListener('click', newGame);
       gamePlaying = false;
     } else {
-      //go to the next players
-      nextPlayer();
+    //go to the next players
+    nextPlayer();
     }
   }
 });
@@ -72,6 +76,7 @@ function nextPlayer() {
   document.querySelector('.player-1-panel').classList.toggle('active');
   diceDOM.style.display = 'none';
 }
+
 
 function newGame(){
   gamePlaying = true;
